@@ -23,6 +23,7 @@ double ActualCost(const VertexPoint& aStart, const VertexPoint& aGoal)
 			(aStart.x - aGoal.x) * (aStart.x - aGoal.x)
 					+ (aStart.y - aGoal.y) * (aStart.y - aGoal.y));
 }
+
 double ActualCost(const Vertex& aStart, const Vertex& aGoal)
 {
 	std::pair<double, double> pos1 = calcPosition(aStart.phi1, aStart.phi2,
@@ -30,6 +31,12 @@ double ActualCost(const Vertex& aStart, const Vertex& aGoal)
 
 	std::pair<double, double> pos2 = calcPosition(aGoal.phi1, aGoal.phi2,
 			aGoal.phi3);
+
+	std::cout<<aStart.phi1<<","<< aStart.phi2<<","<< aStart.phi3<<std::endl;
+
+	std::cout<<"A: "<<std::sqrt(
+			(pos1.first - pos2.first) * (pos1.first - pos2.first)
+					+ (pos1.second - pos2.second) * (pos1.second - pos2.second))<<std::endl;
 	return std::sqrt(
 			(pos1.first - pos2.first) * (pos1.first - pos2.first)
 					+ (pos1.second - pos2.second) * (pos1.second - pos2.second));
@@ -49,6 +56,12 @@ double HeuristicCost(const Vertex& aStart, const VertexPoint& aGoal)
 {
 	std::pair<double, double> pos = calcPosition(aStart.phi1, aStart.phi2,
 			aStart.phi3);
+
+	std::cout<<aStart.phi1<<","<< aStart.phi2<<","<< aStart.phi3<<std::endl;
+
+	std::cout<<"H: "<<std::sqrt(
+			(pos.first - aGoal.x) * (pos.first - aGoal.x)
+					+ (pos.second - aGoal.y) * (pos.second - aGoal.y))<<std::endl;
 	return std::sqrt(
 			(pos.first - aGoal.x) * (pos.first - aGoal.x)
 					+ (pos.second - aGoal.y) * (pos.second - aGoal.y));
@@ -75,6 +88,29 @@ Path ConstructPath(VertexMap& aPredecessorMap, const Vertex& aCurrentNode)
 /**
  *
  */
+
+bool validNeighbour(const Vertex& aVertex)
+{
+	static const std::vector<std::pair<short,short>> angles_bounds = {
+			std::make_pair(-30,90),std::make_pair(0,135),
+			std::make_pair(-90,90)
+	};
+	if(aVertex.phi1 <= angles_bounds.at(0).first || aVertex.phi1 >= angles_bounds.at(0).second)
+	{
+		return false;
+	}
+
+	if(aVertex.phi2 <= angles_bounds.at(1).first || aVertex.phi2 >= angles_bounds.at(1).second)
+	{
+		return false;
+	}
+
+	if(aVertex.phi3 <= angles_bounds.at(2).first || aVertex.phi3 >= angles_bounds.at(2).second)
+	{
+		return false;
+	}
+	return true;
+}
 std::vector<Vertex> GetNeighbours(const Vertex& aVertex,
 		int aFreeRadius /*= 1*/)
 {
@@ -90,16 +126,16 @@ std::vector<Vertex> GetNeighbours(const Vertex& aVertex,
 				v.phi1 += i;
 				v.phi2 += j;
 				v.phi3 += k;
-				if(!(v == aVertex))
+				if(!(v == aVertex) && validNeighbour(aVertex))
 				{
-				std::cout<<"n: "<<v<<std::endl;
+				//std::cout<<"n: "<<v<<std::endl;
 				neighbours.push_back(v);
 				}
 
 			}
 		}
 	}
-	std::cout<<"neigh size: " << neighbours.size()<<std::endl;
+	//std::cout<<"neigh size: " << neighbours.size()<<std::endl;
 	return neighbours;
 
 	//return PathAlgorithm::Graph::GetInstance().GetNeighbours(aVertex);
@@ -117,7 +153,7 @@ std::vector<Edge> GetNeighbourConnections(const Vertex& aVertex,
 	{
 		connections.push_back(Edge(aVertex, vertex));
 	}
-	std::cout<<"connections found"<<std::endl;
+	//std::cout<<"connections found"<<std::endl;
 
 	return connections;
 }
@@ -155,8 +191,8 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 	while (!openSet.empty())
 	{
 		Vertex current = *openSet.begin();
-		auto a = calcPosition(current.phi1, current.phi2, current.phi3);
-		std::cout<<"Current: "<< a.first << ","<<a.second<<std::endl;
+		//auto a = calcPosition(current.phi1, current.phi2, current.phi3);
+		//std::cout<<"Current: "<< a.first << ","<<a.second<<std::endl;
 
 		//If target found, return the path
 		if (current.equalPoint(aGoal))
@@ -170,7 +206,7 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 
 			const std::vector<Edge>& connections = GetNeighbourConnections(
 					current);
-			std::cout<<"connections: " <<connections.size()<<std::endl;
+			//std::cout<<"connections: " <<connections.size()<<std::endl;
 
 			for (const Edge& connection : connections)
 			{
@@ -179,11 +215,12 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 				// The new costs
 				double calculatedActualNeighbourCost = current.actualCost
 						+ ActualCost(current, neighbour);
+				//TODO check deze shortcut... niet handig wellicht.
 				double totalHeuristicCostNeighbour =
-						calculatedActualNeighbourCost
-								+ HeuristicCost(neighbour, aGoal);
+						//calculatedActualNeighbourCost +
+								 HeuristicCost(neighbour, aGoal);
 
-				std::cout<<"Costs calculated"<<std::endl;
+				//std::cout<<"Costs calculated"<<std::endl;
 				OpenSet::iterator openVertex = findInOpenSet(neighbour);
 				if (openVertex != openSet.end())
 				{
@@ -191,7 +228,7 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 					if ((*openVertex).heuristicCost
 							<= totalHeuristicCostNeighbour)
 					{
-						std::cout<<"continue"<<std::endl;
+						//std::cout<<"continue"<<std::endl;
 						continue;
 					}
 					else
@@ -206,7 +243,7 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 					if ((*closedVertex).heuristicCost
 							<= totalHeuristicCostNeighbour)
 					{
-						std::cout<<"continue"<<std::endl;
+						//std::cout<<"continue"<<std::endl;
 						continue;
 					}
 					else
@@ -222,10 +259,10 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 						predecessorMap.insert(
 								std::make_pair(neighbour, current));
 
-				std::cout<<"pred: "<<predecessorMap.size() <<","<<neighbour <<std::endl;
+				//std::cout<<"pred: "<<predecessorMap.size() <<","<<neighbour <<std::endl;
 				if (insertResult1.second != true)
 				{
-					std::cout<<"bool false"<<std::endl;
+					//std::cout<<"bool false"<<std::endl;
 					if (!(*insertResult1.first).first.equalPoint(neighbour))
 					{
 						std::ostringstream os;
@@ -317,6 +354,8 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 			std::iter_swap(openSet.begin(),
 					std::min_element(openSet.begin(), openSet.end(),
 							VertexLessCostCompare()));
+
+			//break;
 		}
 	}
 	std::cerr << "Duration: " << (std::clock() - begin) << " openSet: "

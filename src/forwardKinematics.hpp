@@ -11,9 +11,9 @@
 #include <utility>
 #include <cmath>
 
-const int SIZE1 = 10;
-const int SIZE2 = 10;
-const int SIZE3 = 10;
+const double SIZE1 = 14.605;
+const double SIZE2 = 18.733;
+const double SIZE3 = 8.573;
 
 const double PI = std::acos(-1);
 

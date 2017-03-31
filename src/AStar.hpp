@@ -168,11 +168,11 @@ struct Vertex
 		std::pair<double, double> pos = calcPosition(phi1, phi2, phi3);
 
 		std::cout<<"pos: "<<pos.first<<","<<pos.second<<std::endl;
-		std::cout<<"vertex: "<<aVertex.x<<","<<aVertex.y<<std::endl;
-		std::cout<<"calc: "<<std::abs(1-pos.first/aVertex.x)<<"|"<<std::abs(1-pos.second/aVertex.y)<<std::endl;
+		//std::cout<<"vertex: "<<aVertex.x<<","<<aVertex.y<<std::endl;
+		//std::cout<<"calc: "<<std::abs(1-pos.first/aVertex.x)<<"|"<<std::abs(1-pos.second/aVertex.y)<<std::endl;
 
 
-		return std::abs(1-pos.first/aVertex.x) < 0.001 && std::abs(1-pos.second/aVertex.y) < 0.001;
+		return std::abs(1-pos.first/aVertex.x) < 0.01 && std::abs(1-pos.second/aVertex.y) < 0.01;
 	}
 
 //			bool operator==( const Vertex& aVertex) const
