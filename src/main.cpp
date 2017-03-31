@@ -18,13 +18,14 @@
 
 int main(int argc, char **argv) {
 
-	//std::pair<double,double> a = calcPosition(20,20,20);
+	//std::pair<double,double> a = calcPosition(17,21,25);
 	//std::cout<<a.first<<","<<a.second<<std::endl;
 
 	try {
 		PathAlgorithm::AStar a;
 
 		std::cout << "Let's try A*" << std::endl;
+		// find ~20,20,20
 		PathAlgorithm::Path p = a.search(PathAlgorithm::Vertex(10,10,10),Point(18,22));
 
 		std::cout << p.size() << std::endl;

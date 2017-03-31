@@ -142,9 +142,13 @@ struct Vertex
 		if (phi1 < aVertex.phi1)
 			return true;
 		if (phi1 == aVertex.phi1)
+		{
+			if(phi2 == aVertex.phi2)
+			{
+				return phi3 < aVertex.phi3;
+			}
 			return phi2 < aVertex.phi2;
-		if (phi1 == aVertex.phi1 && phi2 == aVertex.phi2)
-			return phi3 < aVertex.phi3;
+		}
 		return false;
 	}
 	/**
@@ -158,8 +162,17 @@ struct Vertex
 
 	bool equalPoint(const VertexPoint& aVertex) const
 	{
+		//std::pair<double, double> pos = calcPosition(phi1, phi2, phi3);
+		//return pos.first == aVertex.x && pos.second == aVertex.y;
+
 		std::pair<double, double> pos = calcPosition(phi1, phi2, phi3);
-		return pos.first == aVertex.x && pos.second == aVertex.y;
+
+		std::cout<<"pos: "<<pos.first<<","<<pos.second<<std::endl;
+		std::cout<<"vertex: "<<aVertex.x<<","<<aVertex.y<<std::endl;
+		std::cout<<"calc: "<<std::abs(1-pos.first/aVertex.x)<<"|"<<std::abs(1-pos.second/aVertex.y)<<std::endl;
+
+
+		return std::abs(1-pos.first/aVertex.x) < 0.001 && std::abs(1-pos.second/aVertex.y) < 0.001;
 	}
 
 //			bool operator==( const Vertex& aVertex) const

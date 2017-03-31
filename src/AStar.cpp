@@ -191,6 +191,7 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 					if ((*openVertex).heuristicCost
 							<= totalHeuristicCostNeighbour)
 					{
+						std::cout<<"continue"<<std::endl;
 						continue;
 					}
 					else
@@ -205,6 +206,7 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 					if ((*closedVertex).heuristicCost
 							<= totalHeuristicCostNeighbour)
 					{
+						std::cout<<"continue"<<std::endl;
 						continue;
 					}
 					else
@@ -219,8 +221,11 @@ Path AStar::search(Vertex aStart, const VertexPoint& aGoal)
 				std::pair<VertexMap::iterator, bool> insertResult1 =
 						predecessorMap.insert(
 								std::make_pair(neighbour, current));
+
+				std::cout<<"pred: "<<predecessorMap.size() <<","<<neighbour <<std::endl;
 				if (insertResult1.second != true)
 				{
+					std::cout<<"bool false"<<std::endl;
 					if (!(*insertResult1.first).first.equalPoint(neighbour))
 					{
 						std::ostringstream os;
